@@ -4,7 +4,8 @@ on: [pull_request]
 
 jobs:
   run-script:
-    runs-on: ubuntu-latest  # Change this if testing on Windows or macOS
+    runs-on: ubuntu-latest  # TODO: Change to windows-latest for Windows testing
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -14,16 +15,18 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Install dependencies
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
         run: |
           python -m pip install --upgrade pip
-          
-          if [[ "$RUNNER_OS" == "Linux" ]]; then
-            pip install -r requirements-linux.txt
-            sudo apt-get update && sudo apt-get install -y dbus libdbus-glib-1-dev
-          else
-            pip install -r requirements-windows.txt
-          fi
+          pip install -r requirements-linux.txt
+          sudo apt-get update && sudo apt-get install -y dbus libdbus-glib-1-dev
+
+      - name: Install dependencies (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-windows.txt
 
       - name: Run Python script
         run: python main.py --help
