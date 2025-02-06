@@ -169,7 +169,7 @@ def main(args: list[str]) -> int:
         set_payload_wallpaper()
         atexit.register(restore_wallpapers, wallpapers)
     except Exception as e:
-        logger.error('Wallpaper manipulation failed: {e}')
+        logger.error(f'Wallpaper manipulation failed: {e}')
         exit(1)
     
     logger.debug(f"Wallpaper successfully replaced with {payload}. Expect psychological effects.")
