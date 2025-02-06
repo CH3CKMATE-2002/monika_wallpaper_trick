@@ -1,6 +1,9 @@
 name: Python Code Check
 
-on: [pull_request]
+on: [
+  pull_request,
+  workflow_dispatch
+]
 
 jobs:
   run-script:
