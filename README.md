@@ -17,11 +17,11 @@ This project was a simple Bash script. Now, it has evolved into a cross-platform
 
 ## :camera: ​Preview
 
-![Monika 1](readme.assets/Monika 1.png)
+![Monika 1](readme.assets/Monika_1.png)
 
-![Monika 2](readme.assets/Monika 2.png)
+![Monika 2](readme.assets/Monika_2.png)
 
-![Monika 3](readme.assets/Monika 3.png)
+![Monika 3](readme.assets/Monika_3.png)
 
 ------
 
