@@ -248,6 +248,9 @@ def get_wallpaper(is_dark = False) -> str:
         return None
 
 def set_wallpaper(wallpaper_path: str, is_dark = False):
+    if wallpaper_path is None:
+        raise RuntimeError('Wallpaper path is None')
+    
     if is_windows():
         _set_windows_wallpaper(wallpaper_path)
     
@@ -265,6 +268,9 @@ def set_wallpaper(wallpaper_path: str, is_dark = False):
     
     elif DESKTOP_ENV == 'kde':
         _set_kde_wallpaper(wallpaper_path)
+    
+    else:
+        raise NotImplementedError('Unsupported Operating System or Desktop Environment.')
     
     time.sleep(2)  # Wait for the things to apply.
 

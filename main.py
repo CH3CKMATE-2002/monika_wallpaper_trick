@@ -4,8 +4,9 @@
 @coauthor: Monika           ?!?!
 """
 
-import sys, time, os, shutil, atexit, random
+import sys, time, os, shutil, atexit
 from tempfile import NamedTemporaryFile
+from random import choice
 
 from colorama import Style, Fore, init
 
@@ -21,9 +22,16 @@ init()
 m_name = 'MONITOR_KERNEL_ACCESS'
 # Fun fact: My name, "Monika", actually stands for MONITOR_KERNEL_ACCESS! Who knew, right?
 
-payload_wallpapers = os.listdir('assets')
-chosen_wallpaper = random.choice(payload_wallpapers)
-payload = f'assets/{chosen_wallpaper}'
+script_dir = os.path.dirname(os.path.abspath(__file__))
+assets_dir = os.path.join(script_dir, 'assets')
+wallpapers_dir = os.path.join(assets_dir, 'wallpapers')
+icons_dir = os.path.join(assets_dir, 'icons')
+
+payload_wallpapers = os.listdir(wallpapers_dir)
+chosen_wallpaper = choice(payload_wallpapers)
+payload = os.path.join(wallpapers_dir, chosen_wallpaper)
+
+app_icon = os.path.join(icons_dir, 'heart.svg')
 
 trick_ended = False
 
@@ -38,10 +46,11 @@ except ImportError as e:
 notification: Notification = notification  # Just for intellisense
 
 def notify(title: str, message: str):
+    global app_icon
     notification.notify(
         title=title,
         message=message,
-        app_icon='emote-love-symbolic',
+        app_icon=app_icon,
         app_name="Monika's Trick",
     )
 
@@ -53,7 +62,7 @@ def monika(message: str, wait_time: int = 0):
 
 
 def copy_to_tempfile(src_path):
-    with NamedTemporaryFile(delete=True) as temp_file:
+    with NamedTemporaryFile(delete=False) as temp_file:
         shutil.copy(src_path, temp_file.name)
         return temp_file.name
 
@@ -71,7 +80,6 @@ def load_wallpapers():
         # it'll overwrite that file... so, we need to cache the wallpaper
         # to restore it for the user later!
         temp_file = copy_to_tempfile(og_wallpaper)
-        shutil.copy(og_wallpaper, temp_file)
         
         # Create a cleanup function for Windows and register it
         def cleanup_windows_temps(temp_path: str):
@@ -157,8 +165,12 @@ def main(args: list[str]) -> int:
     logger.info(f"{m_name} requested elevated privileges.")
     logger.warning("Attempting unauthorized wallpaper manipulation...")
 
-    set_payload_wallpaper()
-    atexit.register(restore_wallpapers, wallpapers)
+    try:
+        set_payload_wallpaper()
+        atexit.register(restore_wallpapers, wallpapers)
+    except Exception as e:
+        logger.error('Wallpaper manipulation failed: {e}')
+        exit(1)
     
     logger.debug(f"Wallpaper successfully replaced with {payload}. Expect psychological effects.")
     logger.error('System wallpaper is not found?!')
