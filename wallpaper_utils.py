@@ -1,5 +1,7 @@
 """
 @author: CH3CKMATE-2002
+@contributors:
+    Hani
 """
 
 import os, platform, subprocess, time
