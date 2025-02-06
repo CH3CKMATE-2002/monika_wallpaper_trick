@@ -142,7 +142,7 @@ def main(args: list[str]) -> int:
 
     if not os.path.exists(payload):
         logger.error(f"Whoops! Payload wallpaper does not exist at '{payload}'")
-        exit(1)
+        return 1
 
     player = get_real_name() or 'User'
 
@@ -164,7 +164,7 @@ def main(args: list[str]) -> int:
         atexit.register(restore_wallpapers, wallpapers)
     except Exception as e:
         logger.error(f'Wallpaper manipulation failed: {e}')
-        exit(1)
+        return 1
     
     logger.debug(f"Wallpaper successfully replaced with {payload}. Expect psychological effects.")
     logger.error('System wallpaper is not found?!')
