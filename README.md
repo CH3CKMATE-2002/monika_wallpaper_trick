@@ -117,7 +117,7 @@ Want to improve Monika’s Trick? Feel free to contribute!
 - CH3CKMATE-2002
 
 **Contributors:**
-- My Best Friend, Hani 💪 (Windows testing)
+- My best friend, Hani 💪 (Windows testing)
 - Monika (because she refuses to be removed 😆)
 
 
