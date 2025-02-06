@@ -217,17 +217,17 @@ def _set_kde_wallpaper(wallpaper_path: str):
     iface.evaluateScript(script)
 
 
-def is_Windows():
+def is_windows():
     return SYSTEM_NAME == 'windows'
 
-def is_GNOME():
+def is_gnome():
     return DESKTOP_ENV in ['gnome', 'ubuntu']
 
 def get_wallpaper(is_dark = False) -> str:
-    if is_Windows():
+    if is_windows():
         return _get_windows_wallpaper()
     
-    elif is_GNOME():
+    elif is_gnome():
         return _get_gnome_wallpaper(is_dark)
     
     elif DESKTOP_ENV == 'cinnamon':
@@ -246,10 +246,10 @@ def get_wallpaper(is_dark = False) -> str:
         return None
 
 def set_wallpaper(wallpaper_path: str, is_dark = False):
-    if is_Windows():
+    if is_windows():
         _set_windows_wallpaper(wallpaper_path)
     
-    elif is_GNOME():
+    elif is_gnome():
         _set_gnome_wallpaper(wallpaper_path, is_dark)
     
     elif DESKTOP_ENV == 'cinnamon':

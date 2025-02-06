@@ -9,7 +9,7 @@ from tempfile import NamedTemporaryFile
 
 from colorama import Style, Fore, init
 
-from wallpaper_utils import get_wallpaper, set_wallpaper, is_GNOME, is_Windows
+from wallpaper_utils import get_wallpaper, set_wallpaper, is_gnome, is_windows
 from baby_logger import Logger, LogLevel
 from sys_utils import get_real_name
 from app_cli import parse_arguments, show_about, show_usage
@@ -58,10 +58,10 @@ def copy_to_tempfile(src_path):
 def load_wallpapers():
     og_wallpaper = get_wallpaper()
 
-    if is_GNOME():
+    if is_gnome():
         # Load the dark wallpaper too.
         return (og_wallpaper, get_wallpaper(True))
-    elif is_Windows():
+    elif is_windows():
         # Windows stores the currently set wallpaper in
         # %APPDATA%/Microsoft/Windows/Themes/TranscodedWallpaper
         # as a '.jpg' file, so whenever the user changes the wallpaper,
@@ -84,7 +84,7 @@ def load_wallpapers():
 def set_payload_wallpaper():
     global PAYLOAD_WALLPAPER
     set_wallpaper(PAYLOAD_WALLPAPER)
-    if is_GNOME():
+    if is_gnome():
         set_wallpaper(PAYLOAD_WALLPAPER, True)
 
 
@@ -97,7 +97,7 @@ def restore_wallpapers(wallpapers: tuple[str, str]):
     trick_ended = True
 
     set_wallpaper(wallpapers[0])
-    if is_GNOME() and (wallpapers[1] is not None):
+    if is_gnome() and (wallpapers[1] is not None):
         # Restore the dark wallpaper too.
         set_wallpaper(wallpapers[1], True)
 
