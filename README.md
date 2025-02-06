@@ -6,6 +6,11 @@
 
 This project was a simple Bash script. Now, it has evolved into a cross-platform Python prank that works on **Linux** and **Windows**!
 
+## 🚨 Disclaimer
+
+This is a fan work inspired by *Doki Doki Literature Club! (DDLC)* and is not affiliated with or endorsed by *Team Salvato.*
+*DDLC* and all related characters are the intellectual property of Team Salvato. This project is intended as a lighthearted joke and respects the original work’s integrity.
+
 ## 🚀 Features
 
 - **Cross-platform support** (Windows & Linux)
