@@ -138,7 +138,7 @@ def main(args: list[str]) -> int:
     logger = Logger() # Default verbosity level is ERROR
 
     if parsed_args.verbose is not None:
-        if parsed_args.verbose < 0 or parsed_args.verbose > 3:
+        if parsed_args.verbose < -1 or parsed_args.verbose > 3:
             logger.error(f'Invalid verbosity level: {parsed_args.verbose}')
             return 1
         logger.verbosity_level = LogLevel(parsed_args.verbose)
