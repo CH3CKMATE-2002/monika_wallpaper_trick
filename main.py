@@ -6,7 +6,6 @@
 
 import sys, time, os, shutil, atexit
 from tempfile import NamedTemporaryFile
-from random import choice
 
 from colorama import Style, Fore, init
 
@@ -19,17 +18,15 @@ from app_cli import parse_arguments, show_about, show_usage
 init()
 
 
-m_name = 'MONITOR_KERNEL_ACCESS'
-# Fun fact: My name, "Monika", actually stands for MONITOR_KERNEL_ACCESS! Who knew, right?
+m_name = 'MONITOR_KERNEL_ACCESS'  # "Monika" actually stands for MONITOR_KERNEL_ACCESS! Who knew, right?
+m_msg_format = f'{Fore.GREEN}{Style.BRIGHT}%s{Style.RESET_ALL}: %s'
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 assets_dir = os.path.join(script_dir, 'assets')
 wallpapers_dir = os.path.join(assets_dir, 'wallpapers')
 icons_dir = os.path.join(assets_dir, 'icons')
 
-payload_wallpapers = os.listdir(wallpapers_dir)
-chosen_wallpaper = choice(payload_wallpapers)
-payload = os.path.join(wallpapers_dir, chosen_wallpaper)
+payload = os.path.join(wallpapers_dir, 'monika-missing-linux.png')
 
 app_icon = os.path.join(icons_dir, 'heart.svg')
 
@@ -55,8 +52,8 @@ def notify(title: str, message: str):
     )
 
 def monika(message: str, wait_time: int = 0):
-    global m_name
-    print(f'{Style.BRIGHT}{Fore.GREEN}{m_name}{Style.RESET_ALL}: {message}')
+    global m_name, m_msg_format
+    print(m_msg_format % (m_name, message))
     notify('Monika:', message)
     time.sleep(wait_time)
 
@@ -117,7 +114,7 @@ def main(args: list[str]) -> int:
     """
     The Main entry-point of our script
     """
-    global m_name, payload
+    global m_name, payload, m_msg_format
 
     #### Parsing Arguments ####
     parsed_args = parse_arguments(args)
@@ -129,13 +126,10 @@ def main(args: list[str]) -> int:
         show_about()
         return 0
     
+    logger = Logger(no_color=parsed_args.no_colored_log)
+
     if parsed_args.no_colored_log:
-        global Fore, Style
-        Fore.RED = Fore.GREEN = Fore.BLUE = Fore.YELLOW = Fore.MAGENTA = Fore.WHITE = ""
-        Style.BRIGHT = Style.RESET_ALL = ""
-    
-    # There's no need to pass 'no_color', thanks to python cool import system!
-    logger = Logger() # Default verbosity level is ERROR
+        m_msg_format = '%s: %s'
 
     if parsed_args.verbose is not None:
         if parsed_args.verbose < -1 or parsed_args.verbose > 3:

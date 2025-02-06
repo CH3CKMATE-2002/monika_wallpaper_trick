@@ -272,5 +272,5 @@ def set_wallpaper(wallpaper_path: str, is_dark = False):
     else:
         raise NotImplementedError('Unsupported Operating System or Desktop Environment.')
     
-    time.sleep(2)  # Wait for the things to apply.
+    time.sleep(1)  # Wait for the things to apply.
 

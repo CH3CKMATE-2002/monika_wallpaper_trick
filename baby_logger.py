@@ -25,27 +25,24 @@ class Logger():
         self.template = template
         self.no_color = no_color
 
-        if self.no_color:
-            self.disable_colors()
-        
-    def disable_colors(self):
-        global Fore, Style
-        Fore.RED = Fore.GREEN = Fore.BLUE = Fore.YELLOW = Fore.MAGENTA = Fore.WHITE = ""
-
     def log(self, level: LogLevel, message: str):
         if level.value <= self.verbosity_level.value:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            color = {
+            level_color = '' if self.no_color else {
                 LogLevel.DEBUG:   Fore.GREEN,
                 LogLevel.WARNING: Fore.YELLOW,
                 LogLevel.INFO:    Fore.BLUE,
                 LogLevel.ERROR:   Fore.RED
             }.get(level, Fore.WHITE)
 
+            timestamp_color = '' if self.no_color else Fore.MAGENTA
+
+            reset = '' if self.no_color else Style.RESET_ALL
+
             log_message = self.template.format(
-                timestamp=f'{Fore.MAGENTA}{timestamp}{Style.RESET_ALL}',
-                level=f'{color}{level.name:<7}{Style.RESET_ALL}',
+                timestamp=f'{timestamp_color}{timestamp}{reset}',
+                level=f'{level_color}{level.name:<7}{reset}',
                 message=message,
             )
 
