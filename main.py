@@ -4,7 +4,7 @@
 @coauthor: Monika           ?!?!
 """
 
-import sys, time, os, shutil, atexit
+import sys, time, os, shutil, atexit, random
 from tempfile import NamedTemporaryFile
 
 from colorama import Style, Fore, init
@@ -21,7 +21,10 @@ init()
 m_name = 'MONITOR_KERNEL_ACCESS'
 # Fun fact: My name, "Monika", actually stands for MONITOR_KERNEL_ACCESS! Who knew, right?
 
-PAYLOAD_WALLPAPER = 'assets/monika-missing-linux.png'
+payload_wallpapers = os.listdir('assets')
+chosen_wallpaper = random.choice(payload_wallpapers)
+payload = f'assets/{chosen_wallpaper}'
+
 trick_ended = False
 
 
@@ -82,10 +85,10 @@ def load_wallpapers():
 
 
 def set_payload_wallpaper():
-    global PAYLOAD_WALLPAPER
-    set_wallpaper(PAYLOAD_WALLPAPER)
+    global payload
+    set_wallpaper(payload)
     if is_gnome():
-        set_wallpaper(PAYLOAD_WALLPAPER, True)
+        set_wallpaper(payload, True)
 
 
 def restore_wallpapers(wallpapers: tuple[str, str]):
@@ -106,7 +109,7 @@ def main(args: list[str]) -> int:
     """
     The Main entry-point of our script
     """
-    global m_name, PAYLOAD_WALLPAPER
+    global m_name, payload
 
     #### Parsing Arguments ####
     parsed_args = parse_arguments(args)
@@ -135,8 +138,8 @@ def main(args: list[str]) -> int:
 
     #### Setting some variables ####
 
-    if not os.path.exists(PAYLOAD_WALLPAPER):
-        logger.error(f"Whoops! Payload wallpaper does not exist at '{PAYLOAD_WALLPAPER}'")
+    if not os.path.exists(payload):
+        logger.error(f"Whoops! Payload wallpaper does not exist at '{payload}'")
         exit(1)
 
     player = get_real_name() or 'User'
@@ -157,7 +160,7 @@ def main(args: list[str]) -> int:
     set_payload_wallpaper()
     atexit.register(restore_wallpapers, wallpapers)
     
-    logger.debug(f"Wallpaper successfully replaced with {PAYLOAD_WALLPAPER}. Expect psychological effects.")
+    logger.debug(f"Wallpaper successfully replaced with {payload}. Expect psychological effects.")
     logger.error('System wallpaper is not found?!')
     logger.warning(f"{m_name} is exhibiting anomalous behavior.")
     
