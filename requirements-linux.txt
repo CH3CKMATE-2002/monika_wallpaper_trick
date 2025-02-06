@@ -1,0 +1,4 @@
+colorama
+pydbus  # For Linux dbus support
+PyGObject  # For Linux GI.repository
+plyer  # For cross-platform notifications
