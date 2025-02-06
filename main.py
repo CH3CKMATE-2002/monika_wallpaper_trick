@@ -119,8 +119,11 @@ def main(args: list[str]) -> int:
         return 0
     
     if parsed_args.no_colored_log:
-        init(autoreset=False)
+        global Fore, Style
+        Fore.RED = Fore.GREEN = Fore.BLUE = Fore.YELLOW = Fore.MAGENTA = Fore.WHITE = ""
+        Style.BRIGHT = Style.RESET_ALL = ""
     
+    # There's no need to pass 'no_color', thanks to python cool import system!
     logger = Logger() # Default verbosity level is ERROR
 
     if parsed_args.verbose is not None:
