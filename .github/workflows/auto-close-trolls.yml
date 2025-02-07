@@ -1,0 +1,42 @@
+name: Auto-Close Troll PRs
+
+on:
+  pull_request:
+    types: [opened]
+
+jobs:
+  check-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Title & Description
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prTitle = context.payload.pull_request.title.toLowerCase();
+            const prBody = context.payload.pull_request.body.toLowerCase();
+            
+            // Define banned keywords
+            const bannedKeywords = [
+              "monika best waifu", 
+              "monika owns your pc", 
+              "remove windows support",
+              "only linux users deserve monika",
+              "just monika"
+            ];
+            
+            // Check for troll PRs
+            if (bannedKeywords.some(word => prTitle.includes(word) || prBody.includes(word))) {
+              github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number,
+                state: "closed"
+              });
+
+              github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body: "Oh? What's this...? You thought you could just make random changes to CH3CKMATE's project without actually contributing anything useful? Ahaha~! That's adorable. But you see, I'm always watching over this repository. 💚 Andreas works really hard on this, so I can't just let *anyone* mess with it! If you want to contribute, make sure it's something *meaningful*, okay? Otherwise... well, I'll just have to close your PR. And look at that! It's already done! Ahaha~! 😆 Come back when you have *real* changes to make! I'll be waiting~"
+              });
+            }
