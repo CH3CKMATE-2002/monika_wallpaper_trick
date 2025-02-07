@@ -6,6 +6,11 @@
 
 This project was a simple Bash script. Now, it has evolved into a cross-platform Python prank that works on **Linux** and **Windows**!
 
+<!-- ![GitHub Workflow Status](https://github.com/CH3CKMATE-2002/monika_wallpaper_trick/actions/workflows/python-check.yml/badge.svg) -->
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
+<!-- ![License](https://img.shields.io/github/license/CH3CKMATE-2002/monika_wallpaper_trick) -->
+![GitHub last commit](https://img.shields.io/github/last-commit/CH3CKMATE-2002/monika_wallpaper_trick)
+
 ## 🚨 Disclaimer
 
 This is a fan work inspired by *Doki Doki Literature Club! (DDLC)* and is not affiliated with or endorsed by *Team Salvato.*
