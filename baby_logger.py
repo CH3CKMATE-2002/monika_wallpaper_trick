@@ -20,7 +20,14 @@ class LogLevel(Enum):
 
 
 class Logger():
-    def __init__(self, verbosity=LogLevel.ERROR, template="[{level} - {timestamp}]: {message}", no_color=False) -> None:
+    def __init__(
+            self,
+            name = '',
+            verbosity = LogLevel.ERROR,
+            template="[{level} @ {name} - {timestamp}]: {message}",
+            no_color=False
+    ) -> None:
+        self.name = name
         self.verbosity_level = verbosity
         self.template = template
         self.no_color = no_color
@@ -36,13 +43,16 @@ class Logger():
                 LogLevel.ERROR:   Fore.RED
             }.get(level, Fore.WHITE)
 
+            name_color = '' if self.no_color else Fore.CYAN
+
             timestamp_color = '' if self.no_color else Fore.MAGENTA
 
             reset = '' if self.no_color else Style.RESET_ALL
 
             log_message = self.template.format(
-                timestamp=f'{timestamp_color}{timestamp}{reset}',
+                name=f'{name_color}{self.name}{reset}',
                 level=f'{level_color}{level.name:<7}{reset}',
+                timestamp=f'{timestamp_color}{timestamp}{reset}',
                 message=message,
             )
 
@@ -59,3 +69,9 @@ class Logger():
 
     def error(self, message: str):
         self.log(LogLevel.ERROR, message)
+
+
+global_logger = Logger(
+    verbosity=LogLevel.DEBUG,
+    template='[{level} - {timestamp}]: {message}',
+)

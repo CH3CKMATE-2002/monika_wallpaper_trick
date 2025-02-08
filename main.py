@@ -10,7 +10,7 @@ from tempfile import NamedTemporaryFile
 from colorama import Style, Fore, init
 
 from wallpaper_utils import get_wallpaper, set_wallpaper, is_gnome, is_windows
-from baby_logger import Logger, LogLevel
+from baby_logger import LogLevel, global_logger as logger
 from sys_utils import get_real_name
 from app_cli import parse_arguments, show_about, show_usage
 
@@ -126,7 +126,7 @@ def main(args: list[str]) -> int:
         show_about()
         return 0
     
-    logger = Logger(no_color=parsed_args.no_colored_log)
+    logger.no_color = parsed_args.no_colored_log
 
     if parsed_args.no_colored_log:
         m_msg_format = '%s: %s'
