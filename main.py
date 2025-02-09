@@ -40,7 +40,7 @@ except ImportError as e:
     print('You must install plyer for this app to work')
     exit(1)
 
-notification: Notification = notification  # Just for intellisense
+notification: Notification  # Just for intellisense
 
 def notify(title: str, message: str):
     global app_icon
