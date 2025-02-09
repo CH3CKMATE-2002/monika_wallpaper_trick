@@ -18,6 +18,27 @@ class LogLevel(Enum):
     ERROR = 0
     SILENT = -1
 
+    @staticmethod
+    def get(value: str | int):
+        if isinstance(value, int):
+            try:
+                return LogLevel(value)
+            except:
+                raise ValueError(f'Invalid logging level {value} as it should be between -1 and 3')
+        
+        value = value.lower()
+
+        if value.startswith('debug'):
+            return LogLevel.DEBUG
+        elif value.startswith('warning'):
+            return LogLevel.WARNING
+        elif value.startswith('info'):
+            return LogLevel.INFO
+        elif value.startswith('error'):
+            return LogLevel.ERROR
+        else:
+            return LogLevel.SILENT
+
 
 class Logger():
     def __init__(
