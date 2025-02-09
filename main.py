@@ -10,7 +10,7 @@ from tempfile import NamedTemporaryFile
 from colorama import Style, Fore, init
 
 from wallpaper_utils import get_wallpaper, set_wallpaper, is_gnome, is_windows
-from baby_logger import LogLevel, global_logger as logger
+from omega_logger import LogLevel, global_logger as logger
 from sys_utils import get_real_name
 from app_cli import parse_arguments, show_about, show_usage
 
