@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env py
 """
 @author: CH3CKMATE-2002
 @coauthor: Monika           ?!?!
