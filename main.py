@@ -9,10 +9,13 @@ from tempfile import NamedTemporaryFile
 
 from colorama import Style, Fore, init
 
-from wallpaper_utils import get_wallpaper, set_wallpaper, is_gnome, is_windows
+from wallpaper_utils import get_wallpaper, set_wallpaper
 from omega_logger import LogLevel, global_logger as logger
 from sys_utils import get_real_name
+from sys_info import System, DesktopEnv
 from app_cli import parse_arguments, show_about, show_usage
+from app_paths import *
+from notifications import app_notifier
 
 
 init()
@@ -21,35 +24,11 @@ init()
 m_name = 'MONITOR_KERNEL_ACCESS'  # "Monika" actually stands for MONITOR_KERNEL_ACCESS! Who knew, right?
 m_msg_format = f'{Fore.GREEN}{Style.BRIGHT}%s{Style.RESET_ALL}: %s'
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-assets_dir = os.path.join(script_dir, 'assets')
-wallpapers_dir = os.path.join(assets_dir, 'wallpapers')
-icons_dir = os.path.join(assets_dir, 'icons')
-
-payload = os.path.join(wallpapers_dir, 'monika-missing-linux.png')
-
-app_icon = os.path.join(icons_dir, 'heart.svg')
-
 trick_ended = False
 
 
-try:
-    from plyer import notification
-    from plyer.facades import Notification
-except ImportError as e:
-    print('You must install plyer for this app to work')
-    exit(1)
-
-notification: Notification  # Just for intellisense
-
 def notify(title: str, message: str):
-    global app_icon
-    notification.notify(
-        title=title,
-        message=message,
-        app_icon=app_icon,
-        app_name="Monika's Trick",
-    )
+    app_notifier.notify(title, message)
 
 def monika(message: str, wait_time: int = 0):
     global m_name, m_msg_format
@@ -67,10 +46,10 @@ def copy_to_tempfile(src_path):
 def load_wallpapers():
     og_wallpaper = get_wallpaper()
 
-    if is_gnome():
+    if DesktopEnv.is_gnome():
         # Load the dark wallpaper too.
         return (og_wallpaper, get_wallpaper(True))
-    elif is_windows():
+    elif System.is_windows():
         # Windows stores the currently set wallpaper in
         # %APPDATA%/Microsoft/Windows/Themes/TranscodedWallpaper
         # as a '.jpg' file, so whenever the user changes the wallpaper,
@@ -92,7 +71,7 @@ def load_wallpapers():
 def set_payload_wallpaper():
     global payload
     set_wallpaper(payload)
-    if is_gnome():
+    if DesktopEnv.is_gnome():
         set_wallpaper(payload, True)
 
 
@@ -105,7 +84,7 @@ def restore_wallpapers(wallpapers: tuple[str, str]):
     trick_ended = True
 
     set_wallpaper(wallpapers[0])
-    if is_gnome() and (wallpapers[1] is not None):
+    if DesktopEnv.is_gnome() and (wallpapers[1] is not None):
         # Restore the dark wallpaper too.
         set_wallpaper(wallpapers[1], True)
 

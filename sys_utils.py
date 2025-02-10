@@ -38,9 +38,10 @@
 
 import os
 import platform
+from sys_info import System
 
 def get_real_name() -> str:
-    if platform.system() == 'Windows':
+    if System.is_windows():
         try:
             import ctypes
             from ctypes import wintypes, windll, byref

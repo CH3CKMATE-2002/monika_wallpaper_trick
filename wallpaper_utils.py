@@ -4,19 +4,17 @@
     Hani
 """
 
-import os, platform, subprocess, time
+import os, subprocess, time
 
-
-SYSTEM_NAME = platform.system().lower()
-DESKTOP_ENV = os.getenv("XDG_SESSION_DESKTOP", "").lower()
+from sys_info import System, DesktopEnv
 
 
 try:
-    if SYSTEM_NAME == 'windows':
+    if System.is_windows():
         import ctypes
-    elif SYSTEM_NAME == 'linux':
-        import dbus
-        from gi.repository import Gio
+    elif System.is_linux():
+        import pydbus
+        from gi.repository import Gio, GLib  # type: ignore
     else:
         raise RuntimeError('Unsupported system')
 except ModuleNotFoundError | RuntimeError as e:
@@ -73,21 +71,19 @@ def _set_gio_property_value(setting_path: str, property_name: str, property_valu
 
 
 def _get_dbus_property_value(bus_name: str, object_path: str, setting_name: str, setting_path: str):
-    bus = dbus.SessionBus()
+    bus = pydbus.SessionBus()
     try:
-        proxy = bus.get_object(bus_name, object_path)
-        interface = dbus.Interface(proxy, bus_name)
-        return interface.GetProperty(setting_name, setting_path)
-    except dbus.exceptions.DBusException:
+        proxy = bus.get(bus_name, object_path)
+        return proxy.GetProperty(setting_name, setting_path)
+    except GLib.Error:  # pydbus exceptions typically wrap GLib.Error
         return None
 
 def _set_dbus_property_value(bus_name: str, object_path: str, setting_name: str, setting_path: str, value: str):
-    bus = dbus.SessionBus()
+    bus = pydbus.SessionBus()
     try:
-        proxy = bus.get_object(bus_name, object_path)
-        interface = dbus.Interface(proxy, bus_name)
-        interface.SetProperty(setting_name, setting_path, value)
-    except dbus.exceptions.DBusException:
+        proxy = bus.get(bus_name, object_path)
+        proxy.SetProperty(setting_name, setting_path, value)
+    except GLib.Error:
         return
 
 
@@ -187,23 +183,19 @@ def _set_xfce_wallpaper(wallpaper_path: str):
 
 
 def _get_kde_wallpaper():
-    bus = dbus.SessionBus()
-    plasma = bus.get_object(KDE_PLASMASHELL_BUS_NAME, KDE_PLASMASHELL_OBJECT_PATH)
+    bus = pydbus.SessionBus()
+    plasma = bus.get(KDE_PLASMASHELL_BUS_NAME, KDE_PLASMASHELL_OBJECT_PATH)
     script = """
         var d = desktops()[0];
         d.currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
         print(d.readConfig("Image"));
     """
-    iface = dbus.Interface(plasma, KDE_PLASMASHELL_BUS_NAME)
-
-    uri: str = iface.evaluateScript(script)
+    uri: str = plasma.evaluateScript(script)
     return uri.replace("file://", "")
 
-
 def _set_kde_wallpaper(wallpaper_path: str):
-    bus = dbus.SessionBus()
-    plasma = bus.get_object(KDE_PLASMASHELL_BUS_NAME, KDE_PLASMASHELL_OBJECT_PATH)
-
+    bus = pydbus.SessionBus()
+    plasma = bus.get(KDE_PLASMASHELL_BUS_NAME, KDE_PLASMASHELL_OBJECT_PATH)
     path = os.path.abspath(wallpaper_path)
 
     script = f"""
@@ -214,34 +206,27 @@ def _set_kde_wallpaper(wallpaper_path: str):
             d[i].writeConfig("Image", "file://{path}");
         }}
     """
-
-    iface = dbus.Interface(plasma, KDE_PLASMASHELL_BUS_NAME)
-    iface.evaluateScript(script)
+    plasma.evaluateScript(script)
 
 
-def is_windows():
-    return SYSTEM_NAME == 'windows'
-
-def is_gnome():
-    return DESKTOP_ENV in ['gnome', 'ubuntu']
 
 def get_wallpaper(is_dark = False) -> str:
-    if is_windows():
+    if System.is_windows():
         return _get_windows_wallpaper()
     
-    elif is_gnome():
+    elif DesktopEnv.is_gnome():
         return _get_gnome_wallpaper(is_dark)
     
-    elif DESKTOP_ENV == 'cinnamon':
+    elif DesktopEnv.is_cinnamon():
         return _get_cinnamon_wallpaper()
     
-    elif DESKTOP_ENV == 'mate':
+    elif DesktopEnv.is_mate():
         return _get_mate_wallpaper()
     
-    elif DESKTOP_ENV == 'xfce':
+    elif DesktopEnv.is_xfce():
         return _get_xfce_wallpaper()
     
-    elif DESKTOP_ENV == 'kde':
+    elif DesktopEnv.is_kde():
         return _get_kde_wallpaper()
     
     else:
@@ -251,22 +236,22 @@ def set_wallpaper(wallpaper_path: str, is_dark = False):
     if wallpaper_path is None:
         raise RuntimeError('Wallpaper path is None')
     
-    if is_windows():
+    if System.is_windows():
         _set_windows_wallpaper(wallpaper_path)
     
-    elif is_gnome():
+    elif DesktopEnv.is_gnome():
         _set_gnome_wallpaper(wallpaper_path, is_dark)
     
-    elif DESKTOP_ENV == 'cinnamon':
+    elif DesktopEnv.is_cinnamon():
         _set_cinnamon_wallpaper(wallpaper_path)
     
-    elif DESKTOP_ENV == 'mate':
+    elif DesktopEnv.is_mate():
         _set_mate_wallpaper(wallpaper_path)
     
-    elif DESKTOP_ENV == 'xfce':
+    elif DesktopEnv.is_xfce():
         _set_xfce_wallpaper(wallpaper_path)
     
-    elif DESKTOP_ENV == 'kde':
+    elif DesktopEnv.is_kde():
         _set_kde_wallpaper(wallpaper_path)
     
     else:
